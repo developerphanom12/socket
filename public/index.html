@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket and API Test</title>
+</head>
+<body>
+  <h1>Socket and API Test</h1>
+  <button onclick="testSocketGetInitialMessages()">Test API Messages</button>
+
+  <hr>
+
+  <label for="receiverId">Receiver ID:</label>
+  <input type="text" id="receiverId" placeholder="Receiver ID">
+  <br>
+  <label for="messageBody">Message Body:</label>
+  <input type="text" id="messageBody" placeholder="Message Body">
+  <button onclick="testSocket()">Submit via Socket</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+  <script>
+const socket = io.connect('http://localhost:3900', {
+  query: { token},
+});
+
+    
+    function testSocketGetInitialMessages() {
+    socket.emit('getInitialMessages');
+  }
+
+
+    function testSocket() {
+      const receiverId = document.getElementById('receiverId').value 
+      const messageBody = document.getElementById('messageBody').value;
+      
+      socket.emit('sendMessage', {
+        receiverId ,
+        body: messageBody,
+      });
+      console.log('Socket message sent:', { receiverId, body: messageBody });
+    }
+
+    socket.on('newMessage', (data) => {
+      console.log('New message received:', data);
+    });
+
+    socket.on('initialMessages', (messages) => {
+      console.log('Initial messages received:', messages);
+    });
+   
+    
+  </script>
+</body>
+</html>
